@@ -1,0 +1,16 @@
+{
+  "name": "task",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "sqlite3": "^4.1.0",
+    "zeromq": "^5.1.0"
+  },
+  "devDependencies": {},
+  "author": "Kapustiansky",
+  "license": "ISC"
+}
