@@ -16,6 +16,22 @@ subscriber.on(`message`, function (api_in, messIn) {
 
 	if (dataIn.type == 'login') {
 		//require('./db');
+		if (dataIn.email == '' || dataIn.pwd == '') {
+
+			let errorData = {
+				msg_id: dataIn.msg_id,
+				status: "error",
+				error: "WRONG_FORMAT - нет одного из полей или поля пустые"
+			}
+
+			const api_out = `api_out`;
+			const messErr = JSON.stringify(errorData);
+
+			publisher.send([api_out, messErr]);
+			console.log('pub send');
+			return console.log(new Error('WRONG_FORMAT` - нет одного из полей или поля пустые'));
+
+		} else {
 		let db = new sqlite3.Database('./sql/login.db');
 
 		let sql = `SELECT user_id user_id,
@@ -29,10 +45,10 @@ subscriber.on(`message`, function (api_in, messIn) {
 			if (err) {
 				return console.error(err.message);
 
-			} else if (row.passw !== dataIn.pwd) {
+			} else if (dataIn.pwd !== row.passw) { //dataIn.pwd !== row.passw || dataIn.email !== row.email
 
 				let errorData = {
-					msg_id: "yyy",
+					msg_id: dataIn.msg_id,
 					status: "error",
 					error: "WRONG_PWD - неправильный логин или пароль;"
 				}
@@ -47,7 +63,7 @@ subscriber.on(`message`, function (api_in, messIn) {
 			} else {
 
 				let succData = {
-					msg_id: "yyy",
+					msg_id: dataIn.msg_id,
 					user_id: row.user_id,
 					status: "ok"
 				}
@@ -67,4 +83,5 @@ subscriber.on(`message`, function (api_in, messIn) {
 			return console.log('Close the database connection.');
 		});
 	}
+}
 });

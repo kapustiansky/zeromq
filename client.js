@@ -28,12 +28,16 @@ async function readLine(str) {
 })();
 
 function sendMess(email, password) {
+	let min = 1;
+	let max = 50;
+	let id = min + Math.random() * (max + 1 - min);
+	let msg_id = Math.floor(id);
 
 	let dataIn = {
 		type: "login",
 		email: email,
 		pwd: password,
-		msg_id: "yyy"
+		msg_id: msg_id
 	};
 
 	const api_in = `api_in`;
