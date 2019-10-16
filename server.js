@@ -34,23 +34,23 @@ subscriber.on(`message`, function (api_in, messIn) {
 		} else {
 		let db = new sqlite3.Database('./sql/login.db');
 
-		let sql = `SELECT user_id user_id,
-															email email,
-															passw passw
-												FROM users
-												WHERE email = ?`;
+		let sql = `SELECT 	user_id user_id,
+							email email,
+							passw passw
+							FROM users
+							WHERE email = ?`;
 		let email = dataIn.email;
 
 		db.get(sql, [email], (err, row) => {
 			if (err) {
 				return console.error(err.message);
 
-			} else if (dataIn.pwd !== row.passw) { //dataIn.pwd !== row.passw || dataIn.email !== row.email
+			} else if (row == null) {
 
 				let errorData = {
 					msg_id: dataIn.msg_id,
 					status: "error",
-					error: "WRONG_PWD - неправильный логин или пароль;"
+					error: "WRONG_PWD - неправильный логин"
 				}
 
 				const api_out = `api_out`;
@@ -58,7 +58,22 @@ subscriber.on(`message`, function (api_in, messIn) {
 
 				publisher.send([api_out, messErr]);
 				console.log('pub send');
-				return console.log(new Error('WRONG_PWD - неправильный логин или пароль;'));
+				return console.log(new Error('WRONG_PWD - неправильный логин'));
+
+			} else if (dataIn.pwd !== row.passw) {
+
+				let errorData = {
+					msg_id: dataIn.msg_id,
+					status: "error",
+					error: "WRONG_PWD - неправильный пароль"
+				}
+
+				const api_out = `api_out`;
+				const messErr = JSON.stringify(errorData);
+
+				publisher.send([api_out, messErr]);
+				console.log('pub send');
+				return console.log(new Error('WRONG_PWD - неправильный пароль'));
 
 			} else {
 
